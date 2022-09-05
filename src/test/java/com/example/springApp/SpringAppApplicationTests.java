@@ -1,10 +1,15 @@
 package com.example.springApp;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,21 +17,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SpringAppApplicationTests {
 
 	@Autowired
-	TestRestTemplate template;
+	private PersonService service;
 
-	@LocalServerPort
-	private int port;
+	@Autowired
+	private PersonRepository personRepo;
 
+	@Autowired
+	private PersonController controller;
 	@Test
 	void contextLoads() throws Exception {
-		HttpRequestTest httpRequestTest = new HttpRequestTest();
-		httpRequestTest.CorrectnessOfReturnMessage();
+		List<Person> listResult = service.fetchPersonList();
+		AssertionsForClassTypes.assertThat(listResult).isNotNull();
 
-		RepositoryTest repositoryTest = new RepositoryTest();
-		repositoryTest.isPersonExistById();
+		Person person = new Person("Denis", 19, "2003.06.12");
+		AssertionsForClassTypes.assertThat(service.savePerson(person)).isNotNull();
 
-		ControllerTest controllerTest = new ControllerTest();
-		controllerTest.contextLoads();
+		AssertionsForClassTypes.assertThat(service.findPerson(1L)).isNotNull();
+
+
+		Optional<Person> result = personRepo.findById(3L);
+		AssertionsForClassTypes.assertThat(result).isNotNull();
+
+		result = personRepo.findById(3L);
+		AssertionsForClassTypes.assertThat(result).isNotNull();
+
+		result = personRepo.findById(3L);
+		AssertionsForClassTypes.assertThat(result).isNotNull();
+
+		Assertions.assertThat(controller).isNotNull();
+
 	}
-
 }
